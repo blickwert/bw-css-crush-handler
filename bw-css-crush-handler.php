@@ -16,10 +16,11 @@ if (!class_exists('CssCrush')) {
 add_filter('style_loader_tag', 'bw_process_enqueued_styles_with_csscrush', 10, 4);
 
 function bw_process_enqueued_styles_with_csscrush($html, $handle, $href, $media) {
-    if (is_admin()) {
-        return $html; // Don't process in the admin dashboard
+    // Process only files with the `.ori_csscrush.css` suffix
+    if (is_admin() || !str_ends_with($href, '.ori_csscrush.css')) {
+        return $html; // Skip processing if not targeted
     }
-
+    
     $cache_dir = wp_upload_dir()['basedir'] . '/bw-css-crush-cache/';
     if (!file_exists($cache_dir)) {
         mkdir($cache_dir, 0755, true);
